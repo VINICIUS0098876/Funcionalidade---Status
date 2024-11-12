@@ -158,9 +158,78 @@ const setFiltrarStatus = async function(status){
    }
 }
 
+const setListarFuncionarios = async function(){
+    try {
+        let JSON = {}
+
+
+   let dadosFuncionario = await funcionandoDAO.listAll()
+   {
+    if(dadosFuncionario){
+
+
+        if(dadosFuncionario.length> 0){
+
+
+            for(let funcionarios of dadosFuncionario){
+                let cargoFuncionario = await funcionandoDAO.listCargoById(funcionarios.id)
+                let departamentoFuncionario = await funcionandoDAO.listDepartamentoById(funcionarios.id)
+                delete funcionarios.id_departamento
+                delete funcionarios.id_cargo
+                funcionarios.departamento = departamentoFuncionario
+                funcionarios.cargo = cargoFuncionario
+            }
+
+
+            JSON.funcionarios = dadosFuncionario
+            JSON.quantidade = dadosFuncionario.length
+            JSON.status_code = 200
+            return JSON
+        }else{
+            return message.ERROR_NOT_FOUND
+        }
+    }else{
+        return message.ERROR_INTERNAL_SERVER_DB
+    }
+
+
+    }
+    }
+    catch (error) {
+        console.log(error);
+        return message.ERROR_INTERNAL_SERVER
+}
+}
+
+const setDeletar = async function(id){
+    try {
+        let idFuncionario = id
+    
+        if(idFuncionario == '' || idFuncionario == undefined || idFuncionario == isNaN(idFuncionario) || idFuncionario == null){
+            return message.ERROR_INVALID_ID
+        }else{        
+
+            let dadosFuncionario = await funcionandoDAO.deletar(idFuncionario)
+    
+        
+            if(dadosFuncionario){
+              return  message.SUCCESS_DELETED_ITEM
+            }else{
+                return message.ERROR_NOT_FOUND
+            }
+        }
+    } catch (error) {
+        console.log(error)
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
+
+
 
 module.exports = {
     setAtualizar,
     setListarPorId,
-    setFiltrarStatus
+    setFiltrarStatus,
+    setListarFuncionarios,
+    setDeletar
 }

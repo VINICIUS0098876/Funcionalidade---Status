@@ -25,7 +25,7 @@ const bodyParserJSON = bodyParser.json()
 const controllerEmpresa = require('./controller/controller_empresa.js')
 const { log } = require('console')
 
-
+/*************************************** FUNCIONARIOS ***************************************/
 app.put('/v1/empresa/atualizar/funcionario/:id', cors(), bodyParserJSON, async function(request,response,next){
 
     let idFuncionario = request.params.id
@@ -55,6 +55,31 @@ app.get('/v1/empresa/funcionario/status/filtro', cors(), async function(request,
     let dadosFuncionario = await controllerEmpresa.setFiltrarStatus(status)
 
     response.status(dadosFuncionario.status_code)
+    response.json(dadosFuncionario)
+})
+
+app.get('/v1/empresa/funcionarios', cors(),async function (request,response,next){
+
+    // chama a função da controller para retornar os filmes;
+    let dadosFuncionario = await controllerEmpresa.setListarFuncionarios()
+
+    // validação para retornar o Json dos filmes ou retornar o erro 404;
+    if(dadosFuncionario){
+        response.json(dadosFuncionario);
+        response.status(dadosFuncionario.status_code);
+    }else{
+        response.json({message: 'Nenhum registro foi encontrado'});
+        response.status(404);
+    }
+});
+
+app.delete('/v1/empresa/deletar/funcionario/:id', cors (), async function (request,response,next){
+
+    let idFuncionario = request.params.id
+
+    let dadosFuncionario = await controllerEmpresa.setDeletar(idFuncionario);
+
+    response.status(dadosFuncionario.status_code);
     response.json(dadosFuncionario)
 })
 

@@ -89,10 +89,45 @@ const listDepartamentoById = async function(id){
         }
 }
 
+const listAll = async function(){
+    try {
+        // Realiza a busca do genero pelo ID
+        let sql = `select * from funcionarios`;
+    
+        // Executa no banco de dados o script sql
+        let rsUsuario = await prisma.$queryRawUnsafe(sql);
+
+            return rsUsuario;
+    
+        } catch (error) {
+            console.log(error);
+            return false;
+            
+        }
+}
+
+const deletar = async function(id){
+    try {
+        let sql = `DELETE FROM funcionarios WHERE id = ${id}`
+
+
+        
+        let rsUsuario = await prisma.$executeRawUnsafe(sql);
+        console.log(sql);
+
+        return rsUsuario
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
 module.exports = {
     update,
     listById,
     filter,
     listCargoById,
-    listDepartamentoById
+    listDepartamentoById,
+    listAll,
+    deletar
 }
